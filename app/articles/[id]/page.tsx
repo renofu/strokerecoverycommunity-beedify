@@ -1,49 +1,20 @@
-import fs from 'fs';
-import path from 'path';
+import { articles } from '@/data/articles';
 import Link from 'next/link';
-
-interface Article {
-  id: string;
-  title: string;
-  category: string;
-  readTime: string;
-  date: string;
-  author: string;
-  excerpt: string;
-  heroImage: string;
-  heroImageAlt: string;
-  tags: string[];
-  content: string;
-}
+import { notFound } from 'next/navigation';
 
 export async function generateStaticParams() {
-  const articlesDirectory = path.join(process.cwd(), 'content/articles');
-  if (!fs.existsSync(articlesDirectory)) return [];
-  const filenames = fs.readdirSync(articlesDirectory);
-  return filenames
-    .filter((file) => file.endsWith('.json'))
-    .map((file) => ({
-      id: file.replace(/\.json$/, ''),
-    }));
+  return articles.map((article) => ({
+    id: article.id,
+  }));
 }
 
 export default async function ArticlePage({ params }: { params: { id: string } }) {
   const { id } = params;
-  const filePath = path.join(process.cwd(), 'content/articles', `${id}.json`);
+  const article = articles.find((item) => item.id === id);
 
-  if (!fs.existsSync(filePath)) {
-    return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6">
-        <h1 className="text-2xl font-bold mb-4">Article Not Found</h1>
-        <Link href="/" className="text-blue-400 hover:underline">
-          &larr; Back to Home
-        </Link>
-      </div>
-    );
+  if (!article) {
+    notFound();
   }
-
-  const fileContent = fs.readFileSync(filePath, 'utf8');
-  const article: Article = JSON.parse(fileContent);
 
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -62,14 +33,13 @@ export default async function ArticlePage({ params }: { params: { id: string } }
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-50 tracking-tight leading-tight">
             {article.title}
           </h1>
-          <p className="text-slate-400 text-sm mt-2">By {article.author}</p>
         </div>
 
-        {article.heroImage && (
+        {article.imageUrl && (
           <div className="w-full overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
             <img
-              src={article.heroImage}
-              alt={article.heroImageAlt || article.title}
+              src={article.imageUrl}
+              alt={article.imageAlt || article.title}
               className="w-full h-auto object-cover max-h-[450px]"
             />
           </div>
