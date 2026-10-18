@@ -1,12 +1,85 @@
-import Link from 'next/link'
-import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react'
-import { normalizedArticles } from '@/data/articles'
+import fs from 'fs';
+import path from 'path';
+import Link from 'next/link';
 
-export function generateStaticParams() { return normalizedArticles.map((article) => ({ id: article.id })) }
+interface Article {
+  id: string;
+  title: string;
+  category: string;
+  readTime: string;
+  date: string;
+  author: string;
+  excerpt: string;
+  heroImage: string;
+  heroImageAlt: string;
+  tags: string[];
+  content: string;
+}
 
-export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  const article = normalizedArticles.find((item) => item.id === id)
-  if (!article) return <main className="grid min-h-screen place-items-center bg-slate-950 text-slate-100"><div className="text-center"><h1 className="text-3xl font-semibold">Field note not found</h1><Link className="mt-4 inline-flex items-center gap-2 text-sky-300" href="/">Return home <ArrowRight size={15}/></Link></div></main>
-  return <main className="min-h-screen bg-slate-950 text-slate-100"><header className="border-b border-slate-800"><div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-5 lg:px-8"><Link href="/" className="flex items-center gap-3 text-sm font-semibold"><span className="grid size-8 place-items-center rounded-lg bg-sky-400 text-slate-950"><Sparkles size={16}/></span>Stroke Recovery Community</Link><a href="https://strokerecoveryguide.org" className="hidden text-sm font-medium text-sky-300 sm:block">Explore 21-App Suite <ArrowRight className="ml-1 inline" size={14}/></a></div></header><article className="mx-auto max-w-3xl px-5 py-12 lg:px-8 lg:py-20"><Link href="/#articles" className="inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-sky-300"><ArrowLeft size={15}/> Back to field notes</Link><div className="mt-10"><div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.2em] text-sky-300"><span>{article.category}</span><span className="text-slate-600">/</span><span className="text-slate-500">{article.date} · {article.readTime}</span></div><h1 className="mt-5 text-4xl font-semibold leading-tight tracking-[-0.03em] text-slate-100 md:text-6xl">{article.title}</h1><p className="mt-6 text-xl leading-8 text-slate-400">{article.summary}</p></div><img src={article.imageUrl} alt={article.imageAlt} className="mt-12 h-72 w-full rounded-3xl object-cover md:h-96"/><div className="prose prose-invert mt-12 max-w-none" dangerouslySetInnerHTML={{ __html: article.content }} /><aside className="mt-14 rounded-2xl border border-sky-400/20 bg-sky-400/10 p-6 md:p-8"><div className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-300">Keep exploring</div><h2 className="mt-3 text-2xl font-semibold text-slate-100">Bring a little more structure to your day.</h2><p className="mt-3 leading-7 text-slate-300">Explore SpeakFlow AI and the 21-App Suite for browser-based prompts and tools that support an approachable wellness practice.</p><a href="https://strokerecoveryguide.org" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-sky-300">Explore home tools <ArrowRight size={15}/></a></aside><div className="mt-14 border-t border-slate-800 pt-6"><p className="text-xs leading-6 text-slate-500"><span className="font-semibold text-slate-400">Educational FDA Compliance Disclaimer:</span> This article is for general educational and wellness information only. It is not medical advice and is not intended to diagnose, treat, cure, or prevent any condition. Use your own judgment and seek qualified personal guidance when needed.</p></div></article></main>
+export async function generateStaticParams() {
+  const articlesDirectory = path.join(process.cwd(), 'content/articles');
+  if (!fs.existsSync(articlesDirectory)) return [];
+  const filenames = fs.readdirSync(articlesDirectory);
+  return filenames
+    .filter((file) => file.endsWith('.json'))
+    .map((file) => ({
+      id: file.replace(/\.json$/, ''),
+    }));
+}
+
+export default async function ArticlePage({ params }: { params: { id: string } }) {
+  const { id } = params;
+  const filePath = path.join(process.cwd(), 'content/articles', `${id}.json`);
+
+  if (!fs.existsSync(filePath)) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6">
+        <h1 className="text-2xl font-bold mb-4">Article Not Found</h1>
+        <Link href="/" className="text-blue-400 hover:underline">
+          &larr; Back to Home
+        </Link>
+      </div>
+    );
+  }
+
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const article: Article = JSON.parse(fileContent);
+
+  return (
+    <main className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8">
+      <article className="max-w-3xl mx-auto space-y-8">
+        <div>
+          <Link href="/" className="text-sm text-blue-400 hover:underline mb-4 inline-block">
+            &larr; Back to Home
+          </Link>
+          <div className="flex items-center space-x-2 text-xs text-slate-400 mb-2">
+            <span className="bg-blue-900/50 text-blue-300 px-2 py-0.5 rounded">{article.category}</span>
+            <span>•</span>
+            <span>{article.readTime}</span>
+            <span>•</span>
+            <span>{article.date}</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-50 tracking-tight leading-tight">
+            {article.title}
+          </h1>
+          <p className="text-slate-400 text-sm mt-2">By {article.author}</p>
+        </div>
+
+        {article.heroImage && (
+          <div className="w-full overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
+            <img
+              src={article.heroImage}
+              alt={article.heroImageAlt || article.title}
+              className="w-full h-auto object-cover max-h-[450px]"
+            />
+          </div>
+        )}
+
+        <div
+          className="prose prose-invert max-w-none prose-p:text-slate-300 prose-p:leading-relaxed prose-h2:text-slate-100 prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-slate-200 prose-h3:text-xl prose-h3:font-semibold prose-h3:mt-6 prose-h3:mb-3"
+          dangerouslySetInnerHTML={{ __html: article.content }}
+        />
+      </article>
+    </main>
+  );
 }
