@@ -19,10 +19,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
     notFound();
   }
 
+  // 将正文 HTML 内容按 <h2 分割，以便在文章中间自然嵌入 CTA 卡片
+  const contentParts = article.content.split('<h2>');
+  const firstHalf = contentParts.slice(0, Math.ceil(contentParts.length / 2)).join('<h2>');
+  const secondHalf = contentParts.length > 1 ? '<h2>' + contentParts.slice(Math.ceil(contentParts.length / 2)).join('<h2>') : '';
+
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8">
       <article className="max-w-3xl mx-auto space-y-8">
-        {/* 1. 顶部返回主页导航 */}
+        {/* 1. 顶部导航 */}
         <div>
           <Link
             href="/"
@@ -44,7 +49,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           </h1>
         </div>
 
-        {/* 2. 主图 */}
+        {/* 2. 文章主图 */}
         {article.imageUrl && (
           <div className="w-full overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-xl">
             <img
@@ -55,22 +60,22 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           </div>
         )}
 
-        {/* 3. 正文内容前半部分/主体 */}
+        {/* 3. 正文前半部分 */}
         <div
           className="text-slate-300 text-base leading-relaxed space-y-6 [&>p]:mb-6 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:text-slate-100 [&>h2]:mt-10 [&>h2]:mb-4 [&>h3]:text-xl [&>h3]:font-semibold [&>h3]:text-slate-200 [&>h3]:mt-8 [&>h3]:mb-3 [&>ul]:list-disc [&>ul]:pl-6 [&>ol]:list-decimal [&>ol]:pl-6"
-          dangerouslySetInnerHTML={{ __html: article.content }}
+          dangerouslySetInnerHTML={{ __html: firstHalf }}
         />
 
-        {/* 4. 正文中间的柔和产品引导 (Mid-Article CTA Box) */}
+        {/* 4. 文章中间唯一的轻量产品 CTA 卡片 */}
         <div className="my-10 overflow-hidden rounded-2xl border border-sky-400/25 bg-gradient-to-br from-sky-950/40 via-slate-900 to-indigo-950/30 p-6 md:p-7 shadow-xl">
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-sky-300 mb-2">
-            <Sparkles size={15} /> Companion Practice Tool
+            <Sparkles size={15} /> 21-App Recovery Companion Suite
           </div>
           <h3 className="text-lg md:text-xl font-bold text-slate-100 tracking-tight">
-            Need structured, easy-to-use digital tools for your home routines?
+            Looking for structured, gentle tools for your home practice?
           </h3>
           <p className="mt-2 text-sm text-slate-300 leading-relaxed">
-            Discover SpeakFlow AI and our complete browser-based 21-App Suite, built to bring gentle support, consistency, and structure to your everyday practice.
+            Explore SpeakFlow AI and our full 21-app interactive suite designed to support speech, micro-movements, daily coordination, and routine building.
           </p>
           <div className="mt-4">
             <a
@@ -84,7 +89,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           </div>
         </div>
 
-        {/* 5. 底部强转化横幅 (Bottom CTA Banner) */}
+        {/* 5. 正文后半部分 */}
+        {secondHalf && (
+          <div
+            className="text-slate-300 text-base leading-relaxed space-y-6 [&>p]:mb-6 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:text-slate-100 [&>h2]:mt-10 [&>h2]:mb-4 [&>h3]:text-xl [&>h3]:font-semibold [&>h3]:text-slate-200 [&>h3]:mt-8 [&>h3]:mb-3 [&>ul]:list-disc [&>ul]:pl-6 [&>ol]:list-decimal [&>ol]:pl-6"
+            dangerouslySetInnerHTML={{ __html: secondHalf }}
+          />
+        )}
+
+        {/* 6. 文章底部唯一的强转化横幅 Banner */}
         <div className="mt-14 rounded-3xl bg-sky-400 p-6 sm:p-8 text-slate-950 md:flex md:items-center md:justify-between shadow-xl">
           <div>
             <div className="text-xs font-semibold uppercase tracking-wider text-slate-800/85">
@@ -107,7 +120,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           </a>
         </div>
 
-        {/* 6. 安全免责声明 (Disclaimer) */}
+        {/* 7. 免责声明 Disclaimer */}
         <div className="mt-10 pt-6 border-t border-slate-800/80">
           <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-xs text-amber-200/90 leading-relaxed">
             <p className="font-semibold text-amber-400 mb-1 flex items-center gap-1.5">
@@ -117,7 +130,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           </div>
         </div>
 
-        {/* 7. 底部返回列表 */}
+        {/* 8. 底部返回入口 */}
         <div className="pt-4 flex justify-between items-center border-t border-slate-900">
           <Link
             href="/"
