@@ -8,8 +8,10 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function ArticlePage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
+  
   const article = articles.find((item) => item.id === id);
 
   if (!article) {
