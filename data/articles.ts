@@ -3,6 +3,7 @@ import eveningBalanceTransitionRoutine from '@/content/articles/evening-balance-
 import morningStiffnessMicroRoutine from '@/content/articles/morning-stiffness-micro-routine.json';
 import visualTrackingBrainFitness from '@/content/articles/visual-tracking-brain-fitness.json';
 import vagusNerveBinauralCalm from '@/content/articles/vagus-nerve-binaural-calm.json';
+import seatedBaDuanJinRoutine from '@/content/articles/seated-ba-duan-jin-routine.json';
 
 export interface Article {
   id: string;
@@ -25,6 +26,7 @@ export const articles: Article[] = [
   morningStiffnessMicroRoutine,
   visualTrackingBrainFitness,
   vagusNerveBinauralCalm,
+  seatedBaDuanJinRoutine,
 ];
 
 export const normalizedArticles = articles;
