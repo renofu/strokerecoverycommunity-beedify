@@ -9,7 +9,7 @@ export async function generateStaticParams() {
   }));
 }
 
-// 1. 分类情境化产品 CTA 配置文件
+// 1. 分类情境化产品 CTA 配置文件（统一将 appUrl 指向安全的主域名）
 const CATEGORY_CTA_MAP: Record<string, {
   badge: string;
   title: string;
@@ -24,7 +24,7 @@ const CATEGORY_CTA_MAP: Record<string, {
     title: "Struggling with Vocal Hesitation or Speech Rhythm?",
     description: "Try SpeakFlow AI—a gentle, real-time voice practice companion engineered to help you rebuild speech confidence and vowel clarity at home with zero stress.",
     buttonText: "Try SpeakFlow AI Free",
-    appUrl: "https://strokerecoveryguide.org/speakflow-ai",
+    appUrl: "https://strokerecoveryguide.org",
     icon: Mic,
     borderBgStyles: "border-sky-400/30 bg-gradient-to-br from-sky-950/50 via-slate-900 to-blue-950/40 text-sky-300",
   },
@@ -33,7 +33,7 @@ const CATEGORY_CTA_MAP: Record<string, {
     title: "Turn Micro-Grounding into a Daily Safe Habit",
     description: "Add today's 3-minute tactile perception routine to your interactive daily planner in the 21-App Suite. Track your balance progress gently at your own pace.",
     buttonText: "Explore Balance Tools",
-    appUrl: "https://strokerecoveryguide.org/balance-tracker",
+    appUrl: "https://strokerecoveryguide.org",
     icon: HeartPulse,
     borderBgStyles: "border-emerald-400/30 bg-gradient-to-br from-emerald-950/50 via-slate-900 to-teal-950/40 text-emerald-300",
   },
@@ -42,7 +42,7 @@ const CATEGORY_CTA_MAP: Record<string, {
     title: "Build Lasting Neuromuscular Memory at Home",
     description: "Save these micro-movement exercises directly into your interactive daily prompt list. Access approachable, browser-based tools designed for home practice.",
     buttonText: "Build Your Practice Routine",
-    appUrl: "https://strokerecoveryguide.org/routine-planner",
+    appUrl: "https://strokerecoveryguide.org",
     icon: Activity,
     borderBgStyles: "border-indigo-400/30 bg-gradient-to-br from-indigo-950/50 via-slate-900 to-purple-950/40 text-indigo-300",
   },
