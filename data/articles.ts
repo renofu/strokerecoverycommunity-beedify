@@ -6,6 +6,7 @@ import vagusNerveBinauralCalm from '@/content/articles/vagus-nerve-binaural-calm
 import seatedBaDuanJinRoutine from '@/content/articles/seated-ba-duan-jin-routine.json';
 import mentalImageryNeuroplasticity from '@/content/articles/mental-imagery-neuroplasticity.json';
 import vocalHesitationMicroPhonation from '@/content/articles/vocal-hesitation-micro-phonation.json';
+import restoringGroundConnection from '@/content/articles/restoring-ground-connection.json';
 
 export interface Article {
   id: string;
@@ -31,6 +32,7 @@ export const articles: Article[] = [
   seatedBaDuanJinRoutine,
   mentalImageryNeuroplasticity,
   vocalHesitationMicroPhonation,
+  restoringGroundConnection,
 ];
 
 export const normalizedArticles = articles;
