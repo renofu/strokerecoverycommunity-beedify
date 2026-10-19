@@ -1,12 +1,91 @@
 import { articles } from '@/data/articles';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles, Mic, Activity, HeartPulse } from 'lucide-react';
 
 export async function generateStaticParams() {
   return articles.map((article) => ({
     id: article.id,
   }));
+}
+
+// 1. 分类情境化产品 CTA 配置文件
+const CATEGORY_CTA_MAP: Record<string, {
+  badge: string;
+  title: string;
+  description: string;
+  buttonText: string;
+  appUrl: string;
+  icon: any;
+  borderBgStyles: string;
+}> = {
+  "Speech & Brain Fitness": {
+    badge: "Featured App: SpeakFlow AI",
+    title: "Struggling with Vocal Hesitation or Speech Rhythm?",
+    description: "Try SpeakFlow AI—a gentle, real-time voice practice companion engineered to help you rebuild speech confidence and vowel clarity at home with zero stress.",
+    buttonText: "Try SpeakFlow AI Free",
+    appUrl: "https://strokerecoveryguide.org/speakflow-ai",
+    icon: Mic,
+    borderBgStyles: "border-sky-400/30 bg-gradient-to-br from-sky-950/50 via-slate-900 to-blue-950/40 text-sky-300",
+  },
+  "Balance & Safety": {
+    badge: "21-App Suite: Balance & Safety Tracker",
+    title: "Turn Micro-Grounding into a Daily Safe Habit",
+    description: "Add today's 3-minute tactile perception routine to your interactive daily planner in the 21-App Suite. Track your balance progress gently at your own pace.",
+    buttonText: "Explore Balance Tools",
+    appUrl: "https://strokerecoveryguide.org/balance-tracker",
+    icon: HeartPulse,
+    borderBgStyles: "border-emerald-400/30 bg-gradient-to-br from-emerald-950/50 via-slate-900 to-teal-950/40 text-emerald-300",
+  },
+  "Movement & Coordination": {
+    badge: "21-App Suite: Micro-Movement Routine Planner",
+    title: "Build Lasting Neuromuscular Memory at Home",
+    description: "Save these micro-movement exercises directly into your interactive daily prompt list. Access approachable, browser-based tools designed for home practice.",
+    buttonText: "Build Your Practice Routine",
+    appUrl: "https://strokerecoveryguide.org/routine-planner",
+    icon: Activity,
+    borderBgStyles: "border-indigo-400/30 bg-gradient-to-br from-indigo-950/50 via-slate-900 to-purple-950/40 text-indigo-300",
+  },
+  // 兜底配置 (Default Fallback)
+  "DEFAULT": {
+    badge: "21-App Recovery Companion Suite",
+    title: "Looking for structured, gentle tools for your home practice?",
+    description: "Explore SpeakFlow AI and our full 21-app interactive suite designed to support speech, micro-movements, daily coordination, and routine building.",
+    buttonText: "Explore the 21-App Suite",
+    appUrl: "https://strokerecoveryguide.org",
+    icon: Sparkles,
+    borderBgStyles: "border-sky-400/25 bg-gradient-to-br from-sky-950/40 via-slate-900 to-indigo-950/30 text-sky-300",
+  }
+};
+
+// 2. 动态情境化 CTA 卡片组件
+function ContextualCtaCard({ category }: { category: string }) {
+  const cta = CATEGORY_CTA_MAP[category] || CATEGORY_CTA_MAP["DEFAULT"];
+  const IconComponent = cta.icon;
+
+  return (
+    <div className={`my-10 overflow-hidden rounded-2xl border p-6 md:p-7 shadow-xl ${cta.borderBgStyles}`}>
+      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider mb-2">
+        <IconComponent size={15} /> {cta.badge}
+      </div>
+      <h3 className="text-lg md:text-xl font-bold text-slate-100 tracking-tight">
+        {cta.title}
+      </h3>
+      <p className="mt-2 text-sm text-slate-300 leading-relaxed">
+        {cta.description}
+      </p>
+      <div className="mt-4">
+        <a
+          href={cta.appUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-full bg-sky-400 px-4 py-2 text-xs font-semibold text-slate-950 transition hover:bg-sky-300 shadow-md shadow-sky-400/10"
+        >
+          {cta.buttonText} <ArrowRight size={13} />
+        </a>
+      </div>
+    </div>
+  );
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
@@ -66,28 +145,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           dangerouslySetInnerHTML={{ __html: firstHalf }}
         />
 
-        {/* 4. 文章中间唯一的轻量产品 CTA 卡片 */}
-        <div className="my-10 overflow-hidden rounded-2xl border border-sky-400/25 bg-gradient-to-br from-sky-950/40 via-slate-900 to-indigo-950/30 p-6 md:p-7 shadow-xl">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-sky-300 mb-2">
-            <Sparkles size={15} /> 21-App Recovery Companion Suite
-          </div>
-          <h3 className="text-lg md:text-xl font-bold text-slate-100 tracking-tight">
-            Looking for structured, gentle tools for your home practice?
-          </h3>
-          <p className="mt-2 text-sm text-slate-300 leading-relaxed">
-            Explore SpeakFlow AI and our full 21-app interactive suite designed to support speech, micro-movements, daily coordination, and routine building.
-          </p>
-          <div className="mt-4">
-            <a
-              href="https://strokerecoveryguide.org"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-sky-400 px-4 py-2 text-xs font-semibold text-slate-950 transition hover:bg-sky-300 shadow-md shadow-sky-400/10"
-            >
-              Explore the 21-App Suite <ArrowRight size={13} />
-            </a>
-          </div>
-        </div>
+        {/* 4. 文章中间按 Category 智能匹配的情境化产品 CTA 卡片 */}
+        <ContextualCtaCard category={article.category} />
 
         {/* 5. 正文后半部分 */}
         {secondHalf && (
@@ -97,7 +156,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           />
         )}
 
-        {/* 6. 文章底部唯一的强转化横幅 Banner */}
+        {/* 6. 文章底部强转化横幅 Banner */}
         <div className="mt-14 rounded-3xl bg-sky-400 p-6 sm:p-8 text-slate-950 md:flex md:items-center md:justify-between shadow-xl">
           <div>
             <div className="text-xs font-semibold uppercase tracking-wider text-slate-800/85">
