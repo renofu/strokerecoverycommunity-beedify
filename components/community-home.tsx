@@ -10,7 +10,7 @@ import { audioTracks } from '@/data/audio'
 const PAGE_SIZE = 9
 
 function Pager({ page, total, onChange }: { page: number; total: number; onChange: (page: number) => void }) {
-  if (total <= 1) return null // 如果只有1页，不显示底部分页栏，保持页面简洁
+  if (total <= 1) return null
 
   return (
     <div className="mt-10 flex items-center justify-between border-t border-slate-800 pt-5 text-sm">
@@ -70,6 +70,22 @@ export default function CommunityHome() {
   const audioTotal = Math.ceil(audioTracks.length / 4)
 
   const pageItems = (items: any[], page: number, size = PAGE_SIZE) => items.slice((page - 1) * size, page * size)
+
+  const handleArticlePageChange = (newPage: number) => {
+    setArticlePage(newPage)
+    // 点击翻页时自动平滑滚动回文章区域头部
+    document.getElementById('articles')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const handleVideoPageChange = (newPage: number) => {
+    setVideoPage(newPage)
+    document.getElementById('videos')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const handleAudioPageChange = (newPage: number) => {
+    setAudioPage(newPage)
+    document.getElementById('audio')?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <div className="min-h-screen overflow-hidden bg-slate-950 text-slate-100">
@@ -200,7 +216,7 @@ export default function CommunityHome() {
               </Link>
             ))}
           </div>
-          <Pager page={articlePage} total={articleTotal} onChange={setArticlePage} />
+          <Pager page={articlePage} total={articleTotal} onChange={handleArticlePageChange} />
         </section>
 
         <section className="mx-auto max-w-7xl px-5 py-8 lg:px-8">
@@ -256,7 +272,7 @@ export default function CommunityHome() {
               </article>
             ))}
           </div>
-          <Pager page={videoPage} total={videoTotal} onChange={setVideoPage} />
+          <Pager page={videoPage} total={videoTotal} onChange={handleVideoPageChange} />
         </section>
 
         <section id="audio" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-16 lg:px-8">
@@ -285,7 +301,7 @@ export default function CommunityHome() {
               </article>
             ))}
           </div>
-          <Pager page={audioPage} total={audioTotal} onChange={setAudioPage} />
+          <Pager page={audioPage} total={audioTotal} onChange={handleAudioPageChange} />
         </section>
 
         <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
