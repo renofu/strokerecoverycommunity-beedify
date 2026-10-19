@@ -29,7 +29,7 @@ export const articles: Article[] = [
   visualTrackingBrainFitness,
   vagusNerveBinauralCalm,
   seatedBaDuanJinRoutine,
-  mentalImageryNeuroplasticity，
+  mentalImageryNeuroplasticity,
   vocalHesitationMicroPhonation,
 ];
 
