@@ -10,6 +10,8 @@ import { audioTracks } from '@/data/audio'
 const PAGE_SIZE = 9
 
 function Pager({ page, total, onChange }: { page: number; total: number; onChange: (page: number) => void }) {
+  if (total <= 1) return null // 如果只有1页，不显示底部分页栏，保持页面简洁
+
   return (
     <div className="mt-10 flex items-center justify-between border-t border-slate-800 pt-5 text-sm">
       <button
