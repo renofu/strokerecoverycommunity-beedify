@@ -1,6 +1,7 @@
 import handMicroMovementsGuide from '@/content/articles/hand-micro-movements-guide.json';
 import eveningBalanceTransitionRoutine from '@/content/articles/evening-balance-transition-routine.json';
 import morningStiffnessMicroRoutine from '@/content/articles/morning-stiffness-micro-routine.json';
+import visualTrackingBrainFitness from '@/content/articles/visual-tracking-brain-fitness.json';
 
 export interface Article {
   id: string;
@@ -21,6 +22,7 @@ export const articles: Article[] = [
   handMicroMovementsGuide,
   eveningBalanceTransitionRoutine,
   morningStiffnessMicroRoutine,
+  visualTrackingBrainFitness,
 ];
 
 export const normalizedArticles = articles;
