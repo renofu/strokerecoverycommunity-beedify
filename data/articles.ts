@@ -7,6 +7,7 @@ import seatedBaDuanJinRoutine from '@/content/articles/seated-ba-duan-jin-routin
 import mentalImageryNeuroplasticity from '@/content/articles/mental-imagery-neuroplasticity.json';
 import vocalHesitationMicroPhonation from '@/content/articles/vocal-hesitation-micro-phonation.json';
 import restoringGroundConnection from '@/content/articles/restoring-ground-connection.json';
+import correctingPelvicTiltPostStroke from '@/content/articles/correcting-pelvic-tilt-post-stroke.json';
 
 export interface Article {
   id: string;
@@ -33,6 +34,7 @@ export const articles: Article[] = [
   mentalImageryNeuroplasticity,
   vocalHesitationMicroPhonation,
   restoringGroundConnection,
+  correctingPelvicTiltPostStroke,
 ];
 
 export const normalizedArticles = articles;
